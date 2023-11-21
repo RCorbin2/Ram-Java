@@ -1,0 +1,133 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
+//Inheritance Class
+public class Ram {
+	//private variables
+	private int Memory;
+	private String Job;
+	private int Size, Address;
+	
+	//constructor that sets memory to 100000
+	public Ram(){
+		this.Memory = 100000;
+	}
+	
+	//constructor for wait Table ArrayList
+	public Ram(String j, int s){
+		this.Job = j;
+		this.Size = s;
+	}
+	
+	//constructor for Ram table ArrayList
+	public Ram(String j, int a, int s){
+		this.Job = j;
+		this.Address = a;
+		this.Size = s;
+	}
+	
+	public int getMemory(){
+		return this.Memory;
+	}
+	
+	public void setAddress(int a){
+		this.Address = a;
+	}
+	
+	public String getJob(){
+		return this.Job;
+	}
+	
+	public int getSize(){
+		return this.Size;
+	}
+	public int getAddress(){
+		return this.Address;
+	}
+	
+	//Display for Ram ArrayList
+	public static void  display(ArrayList<Ram> t1){
+
+		System.out.println("Job" + "\t\t" + "Starting Address" + "\t" + "Size(in bytes)");
+
+		for(int i =0; i < t1.size(); i++ ){
+
+			System.out.println(t1.get(i).getJob() + "\t\t" + t1.get(i).getAddress() +  "\t\t\t" + t1.get(i).getSize() );
+		}
+
+		System.out.println("--------------------------------");
+		System.out.println("Waiting Queue");
+		System.out.println("Job" + "\t\t" + "Size (in bytes)");
+	}
+	
+	//Display for Wait Table ArrayList
+	public static void  display1(ArrayList<Ram> t2){
+
+		//For showing that wait table is empty
+		if(t2.isEmpty())
+			System.out.println("Empty");
+		else
+			for(int i =0; i < t2.size(); i++ ){
+				System.out.println(t2.get(i).getJob() + "\t\t" + t2.get(i).getSize());
+			}
+		
+		System.out.println("--------------------------------");
+		System.out.println("1. Add a Job");
+		System.out.println("2. Remove a Job");
+		System.out.println("3. Exit");
+		System.out.print("Enter your options: ");
+	}
+	
+	//For calculating the Free space available in memory
+	public static int calcSpace(ArrayList<Ram> t1){
+
+		int Space = 100000;
+
+		for(int i =0; i < t1.size(); i ++){
+			int addspace = Space - t1.get(i).getSize();
+			Space =+ addspace;
+		}
+			
+		return Space;
+	}
+	
+	//For calculating Address of new objects added to Ram ArrayList
+	public static int calcAddress(ArrayList<Ram> t1){
+		
+		int Address = 0;
+		for (int i = 0; i < t1.size(); i++){
+
+			int add = t1.get(i).getAddress() + t1.get(i).getSize();
+			Address =+ add;
+		}
+		return Address;
+	}
+	
+	//Creates and ArrayList of numbers 1-100 and then shuffles them into a random order
+	public static ArrayList<Integer> rng(ArrayList<Integer> r1){
+
+		ArrayList <Integer> r2 = new ArrayList<Integer>();
+
+		for(int i = 0; i < 100; i++){
+			r2.add(i+1);
+		}
+
+		Collections.shuffle(r2);
+		
+		return r2;
+	}
+	
+	//For calculating the total amount of bytes in ram 
+	public static int calcSize(ArrayList<Ram> t1){
+
+		int size = 0;
+
+		for(int i =0; i < t1.size();i++){
+
+			int add = t1.get(i).getSize();
+			size =+ add;
+		}
+		return size;
+	}
+	
+}
