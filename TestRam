@@ -1,0 +1,141 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class TestRam {
+
+	public static void main(String[] args) {
+
+		// Ram object
+		Ram ob1 = new Ram();
+		
+		//Variables
+		int size, userchoice, register = 0, m = 0;
+		String job, job2;
+		
+		//ArrayList for ram(t1) wait table(t2) , and Integer ArrayList for Random numbers
+		ArrayList <Ram> t1 = new ArrayList<Ram>();
+		ArrayList <Ram> t2 = new ArrayList<Ram>();
+		ArrayList <Integer> r1 = new ArrayList<Integer>();
+		
+		//Adds the OS to the System and populates Random numbers
+		t1.add(new Ram("OS", 0, 10000));
+		r1 = Ram.rng(r1);
+
+		
+		do {
+			//Variables for calculating space and address
+			int Space = Ram.calcSpace(t1);
+			int Address = Ram.calcAddress(t1);
+			
+			//For display of tables
+			System.out.println("Memory (total size: " + ob1.getMemory() + " bytes, free space: " + Space + " bytes");
+			Ram.display(t1);
+			Ram.display1(t2);
+			
+			//input for 1- adding a job, 2- removing job, 3- exiting the program
+			Scanner input = new Scanner(System.in);
+			userchoice = input.nextInt();
+			
+			//exits program
+			if(userchoice == 3){
+
+				System.out.println("You chose to Exit the Program");
+				System.exit(0);
+			}	
+		
+			//option for adding a job
+			if (userchoice == 1){	
+
+				//variable to set a string for job with a RNG
+				job = "J_" + r1.get(m);
+				System.out.println("\nJob ID is " + job);
+				System.out.print("Please Enter Job Size: ");		
+				size = input.nextInt();
+				System.out.println();
+				
+				//Add to ram table if free space is available and adds 1 to counter for the RNG array
+				if (size <= Space ){
+					t1.add(new Ram(job, Address, size));
+					m++;
+				}
+				
+				//Add to wait table if no free space available and adds 1 to counter for the RNG array
+				if(size > Space && size <= 90000){
+					t2.add(new Ram(job, size));
+					m++;
+				}	
+				
+				//Gives error if Size entered is more than total free space
+				else if(size > 90000){
+					System.out.println("\nSize entered is greater than available Memory space(90,000)\n\n");
+				}
+			}
+			
+			//option for removing a job 
+			if (userchoice == 2){
+				//user input for job to be removed
+				System.out.print("Please Enter name of job id that you want to remove: ");
+				Scanner j =  new Scanner(System.in);
+				job2 = j.nextLine();
+				
+				//Gives error if user tries to remove OS
+				if ( t1.get(0).getJob().equals(job2)){
+					System.out.println("\nCan not remove Operating System.\n");
+				}
+				
+			else {
+				//Loop for removing a job in ram table then updating address
+				for (int i = 0; i < t1.size(); i ++){
+					if(t1.get(i).getJob().equals(job2)){
+						//variable for adjusting address
+						register = t1.get(i).getSize();
+
+						for (int t = i; t < t1.size(); t++){
+							//variable for getting current address then subtracting the bytes of removed job. Also updates the address of the jobs after the deleted job 
+							int newadd = t1.get(t).getAddress()- register;
+							t1.get(t).setAddress(newadd);
+						}
+
+						//removes the job after address updates
+						t1.remove(i);
+						
+					}
+
+				}
+				
+				//Loop to copy contents of wait table and add to ram table if enough free space is available
+				for(int i = 0; i < t2.size(); i++){
+					// variables for working with the free space totalSize: adds all the bytes in ram table, totalSpace: to make sure that free space does not go into the negative value 
+					int totalSize = Ram.calcSize(t1);
+					Space = Ram.calcSpace(t1);
+					int totalSpace = Space - t2.get(i).getSize();
+					
+					if(totalSpace >= 0 && totalSize <= Space){
+						//calculates and copies variables for adding new ram object
+						int newaddress = Ram.calcAddress(t1);
+						String copyJob = t2.get(i).getJob();
+						int copySize = t2.get(i).getSize();
+						t1.add(new Ram(copyJob, newaddress, copySize));
+					}
+					
+				}
+				
+				//Loop for removing jobs in wait table
+				for (int i = 0; i < t1.size(); i ++){
+					for (int t = 0; t < t2.size(); t++){
+						//checks to see if a job in ram table has same name in wait table if it does it removes job from wait table
+						if(t1.get(i).getJob().equals(t2.get(t).getJob()))
+						{
+							t2.remove(t);
+						}
+							
+					}
+				}
+				
+			}
+		 }
+		
+		}while(userchoice != 3);
+	}
+
+}
